@@ -58,9 +58,9 @@ export class LoginComponent {
       next: (user) => {
         this.isLoading = false;
         if (user?.role === Role.COLLECTOR) {
-          this.router.navigate(['/collection/collector-dashboard']);
+          this.router.navigate(['/collections/collector-dashboard']);
         } else {
-          this.router.navigate(['/collection/request']);
+          this.router.navigate(['/collections/list']);
         }
       },
       error: (err) => {
