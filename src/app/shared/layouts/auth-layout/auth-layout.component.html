@@ -1,0 +1,22 @@
+<div
+  class="min-h-screen flex flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8"
+>
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <!-- Logo -->
+    <a routerLink="/" class="flex items-center justify-center mb-8">
+      <lucide-icon
+        [img]="Circle"
+        [size]="52"
+        class="text-indigo-600 group-hover:text-indigo-700 transition-colors"
+      ></lucide-icon>
+      <span
+        class="ml-2 text-4xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-800 bg-clip-text text-transparent"
+        >RecycleHub</span
+      >
+    </a>
+  </div>
+
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <router-outlet></router-outlet>
+  </div>
+</div>

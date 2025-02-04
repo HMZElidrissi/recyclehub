@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "email": "collector@recycleapp.com",
+      "password": "password123",
+      "firstName": "John",
+      "lastName": "Doe",
+      "phone": "1234567890",
+      "birthdate": "1990-01-01",
+      "profilePicture": null,
+      "role": "collector",
+      "points": 0
+    },
+    {
+      "id": "2",
+      "email": "user@recycleapp.com",
+      "password": "password123",
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "phone": "0987654321",
+      "birthdate": "1995-05-15",
+      "profilePicture": null,
+      "role": "particular",
+      "points": 100
+    },
+    {
+      "id": "356666aa-aece-4931-bae6-b1214f4d6297",
+      "firstName": "hamza",
+      "lastName": "hamza",
+      "email": "hamza@hamza.com",
+      "phone": "0876549428",
+      "birthdate": "2000-02-12",
+      "password": "hamza123",
+      "profilePicture": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACU0lEQVQ4T6WTT2gTQRjFZzZt053ZGq0gWPSgF9Fs0hYDtuDfQ0UPSZtqaBoTKDE9KIrtqUeDF0H04EEkoqi01UJqoqKIGLVaqCbpoUSCiOBBxVr00hgp1OyObwMRjZuDuLB8u8O837zvzQwl//nQir7LHhp4lB+9VvkfavMPMCFiXNLTTCI3h9z2GI1G9er1yoCOzaFLnIhBRRIX7uTHj0XUfqcikTFGdQeXxGlGdB/q19VM7j0wPTb/O6QM2O4Ib7RqyzM2q3Vb44+lrYyIOGCjnIp5mYpeiKfgpKgQUQrMJkb+AhgD+52RdQ9ylz/22wOfIFwLBylu0adloW/Atw1uvAC9YMRy1JuNz1UgvzIwBrzO0JpGTVvAxLxCSQqiE3gJ/t/A0Ryc9XGLCPekk1dNAQHHkVVCFBIKFY8hckPQwqjWDEdZCF+h7m2i5Iwnk7hiCvA4g5u4TjwK1bCyWAkBhQOG+gVAglYuckredWduXa/pgOiLI0wSYUx8z6neDoAEwFs4qMNOPYGDmCebyJoCjMHhzmG5WPxcgIM6CEk5A1TDAbNQdzAzee/ZTv/6Xc8nPhjz/wixQo2ogZPYtiiED5mkC2TSBuDC4Oxk+92Ogw5ZaPebV9SrrlR80RRggMonkZCznGrfGSWvlfqGiK1p+VtDoTSDVrYYB63z5e1QbUCr/xRWdcFFjhPd1WpT9+2Zipae7vYppaXS+a508rBpC0FncAcOz3H07qvKIMct9FwLU28YINMQu9VDfbhAE5XQqkMsj1Mx3pNNBmvuwr/e7p/JeOgRvV3BTQAAAABJRU5ErkJggg==",
+      "role": "particular",
+      "points": 0
+    },
+    {
+      "id": "b57acd57-baa3-4dba-a229-181eb924e823",
+      "firstName": "hamza",
+      "lastName": "hamza",
+      "email": "hamza1@hamza.com",
+      "phone": "0876549428",
+      "birthdate": "2000-02-12",
+      "password": "hamza123",
+      "profilePicture": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACU0lEQVQ4T6WTT2gTQRjFZzZt053ZGq0gWPSgF9Fs0hYDtuDfQ0UPSZtqaBoTKDE9KIrtqUeDF0H04EEkoqi01UJqoqKIGLVaqCbpoUSCiOBBxVr00hgp1OyObwMRjZuDuLB8u8O837zvzQwl//nQir7LHhp4lB+9VvkfavMPMCFiXNLTTCI3h9z2GI1G9er1yoCOzaFLnIhBRRIX7uTHj0XUfqcikTFGdQeXxGlGdB/q19VM7j0wPTb/O6QM2O4Ib7RqyzM2q3Vb44+lrYyIOGCjnIp5mYpeiKfgpKgQUQrMJkb+AhgD+52RdQ9ylz/22wOfIFwLBylu0adloW/Atw1uvAC9YMRy1JuNz1UgvzIwBrzO0JpGTVvAxLxCSQqiE3gJ/t/A0Ryc9XGLCPekk1dNAQHHkVVCFBIKFY8hckPQwqjWDEdZCF+h7m2i5Iwnk7hiCvA4g5u4TjwK1bCyWAkBhQOG+gVAglYuckredWduXa/pgOiLI0wSYUx8z6neDoAEwFs4qMNOPYGDmCebyJoCjMHhzmG5WPxcgIM6CEk5A1TDAbNQdzAzee/ZTv/6Xc8nPhjz/wixQo2ogZPYtiiED5mkC2TSBuDC4Oxk+92Ogw5ZaPebV9SrrlR80RRggMonkZCznGrfGSWvlfqGiK1p+VtDoTSDVrYYB63z5e1QbUCr/xRWdcFFjhPd1WpT9+2Zipae7vYppaXS+a508rBpC0FncAcOz3H07qvKIMct9FwLU28YINMQu9VDfbhAE5XQqkMsj1Mx3pNNBmvuwr/e7p/JeOgRvV3BTQAAAABJRU5ErkJggg==",
+      "role": "particular",
+      "points": 0
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+<div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+  <div class="max-w-md w-full space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        Create your account
+      </h2>
+    </div>
+
+    <form
+      class="mt-8 space-y-6"
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <!-- Personal Information -->
+      <div class="space-y-4">
+        <!-- Name Fields -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label
+              for="firstName"
+              class="block text-sm font-medium text-gray-700"
+              >First Name</label
+            >
+            <div class="mt-1 relative">
+              <lucide-icon
+                [img]="User"
+                class="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+              ></lucide-icon>
+              <input
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                [class.border-red-500]="isFieldInvalid('firstName')"
+                placeholder="First name"
+              />
+            </div>
+            @if (isFieldInvalid("firstName")) {
+              <p class="mt-2 text-sm text-red-600">First name is required</p>
+            }
+          </div>
+
+          <div>
+            <label
+              for="lastName"
+              class="block text-sm font-medium text-gray-700"
+              >Last Name</label
+            >
+            <div class="mt-1 relative">
+              <lucide-icon
+                [img]="User"
+                class="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+              ></lucide-icon>
+              <input
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                [class.border-red-500]="isFieldInvalid('lastName')"
+                placeholder="Last name"
+              />
+            </div>
+            @if (isFieldInvalid("lastName")) {
+              <p class="mt-2 text-sm text-red-600">Last name is required</p>
+            }
+          </div>
+        </div>
+
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"
+            >Email</label
+          >
+          <div class="mt-1 relative">
+            <lucide-icon
+              [img]="Mail"
+              class="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            ></lucide-icon>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              [class.border-red-500]="isFieldInvalid('email')"
+              placeholder="Email address"
+            />
+          </div>
+          @if (isFieldInvalid("email")) {
+            <p class="mt-2 text-sm text-red-600">Please enter a valid email</p>
+          }
+        </div>
+
+        <!-- Phone Field -->
+        <div>
+          <label for="phone" class="block text-sm font-medium text-gray-700"
+            >Phone Number</label
+          >
+          <div class="mt-1 relative">
+            <lucide-icon
+              [img]="Phone"
+              class="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            ></lucide-icon>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              [class.border-red-500]="isFieldInvalid('phone')"
+              placeholder="Phone number"
+            />
+          </div>
+          @if (isFieldInvalid("phone")) {
+            <p class="mt-2 text-sm text-red-600">
+              Please enter a valid phone number
+            </p>
+          }
+        </div>
+
+        <!-- Birthdate Field -->
+        <div>
+          <label for="birthdate" class="block text-sm font-medium text-gray-700"
+            >Date of Birth</label
+          >
+          <div class="mt-1 relative">
+            <lucide-icon
+              [img]="Calendar"
+              class="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            ></lucide-icon>
+            <input
+              id="birthdate"
+              type="date"
+              formControlName="birthdate"
+              class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              [class.border-red-500]="isFieldInvalid('birthdate')"
+            />
+          </div>
+          @if (isFieldInvalid("birthdate")) {
+            <p class="mt-2 text-sm text-red-600">Date of birth is required</p>
+          }
+        </div>
+
+        <!-- Password Fields -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700"
+            >Password</label
+          >
+          <div class="mt-1 relative">
+            <lucide-icon
+              [img]="Lock"
+              class="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            ></lucide-icon>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              [class.border-red-500]="isFieldInvalid('password')"
+              placeholder="Create a password"
+            />
+          </div>
+          @if (isFieldInvalid("password")) {
+            <p class="mt-2 text-sm text-red-600">
+              Password must be at least 6 characters
+            </p>
+          }
+        </div>
+
+        <!-- Profile Picture -->
+        <div>
+          <label
+            for="profilePicture"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Profile Picture (Optional)
+          </label>
+          <div class="mt-1 relative">
+            <lucide-icon
+              [img]="Image"
+              class="absolute left-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            ></lucide-icon>
+            <input
+              id="profilePicture"
+              type="file"
+              accept="image/*"
+              class="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      @if (error) {
+        <div class="rounded-md bg-red-50 p-4">
+          <div class="flex">
+            <lucide-icon
+              [img]="AlertCircle"
+              class="h-5 w-5 text-red-400"
+            ></lucide-icon>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                {{ error }}
+              </h3>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Submit Button -->
+      <div>
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid || isLoading"
+          class="relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          @if (isLoading) {
+            <lucide-icon
+              [img]="Loader2"
+              class="animate-spin h-5 w-5 text-white absolute left-4"
+            ></lucide-icon>
+            <span class="pl-6">Creating account...</span>
+          } @else {
+            Create account
+          }
+        </button>
+      </div>
+
+      <!-- Login Link -->
+      <div class="flex items-center justify-center text-sm">
+        <span class="text-gray-500">Already have an account?</span>
+        <a
+          routerLink="/auth/login"
+          class="ml-1 font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
+        >
+          Sign in here
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
