@@ -9,8 +9,9 @@
       "@shared/*": ["app/shared/*"],
       "@features/*": ["app/features/*"],
       "@store/*": ["app/store/*"],
-      "@env/*": ["environments/*"]
+      "@env/*": ["environments/*"],
     },
+    "useDefineForClassFields": false,
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
