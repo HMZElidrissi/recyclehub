@@ -1,0 +1,309 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <button
+        (click)="goBack()"
+        class="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100"
+      >
+        <lucide-icon [img]="ArrowLeft" [size]="24"></lucide-icon>
+      </button>
+      <div>
+        <h2 class="text-2xl font-bold text-gray-900">
+          {{
+            isEditMode ? "Edit Collection Request" : "New Collection Request"
+          }}
+        </h2>
+        <p class="mt-1 text-sm text-gray-500">
+          {{
+            isEditMode
+              ? "Update your collection request details"
+              : "Create a new collection request"
+          }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="p-4 rounded-md bg-red-50 border border-red-200">
+    <p class="text-sm text-red-700">{{ error }}</p>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Waste Types -->
+    <div>
+      <label class="block text-sm/6 font-medium text-gray-900"
+        >Types of Waste</label
+      >
+      <div class="mt-2 grid grid-cols-2 gap-2">
+        <div *ngFor="let type of wasteTypeOptions" class="flex items-center">
+          <input
+            type="checkbox"
+            [id]="type"
+            [value]="type"
+            [checked]="form.get('wasteTypes')?.value?.includes(type)"
+            (change)="onWasteTypeChange($event)"
+            class="py-1.5 px-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+          />
+          <label
+            [for]="type"
+            class="ml-2 block text-sm text-gray-900 capitalize"
+          >
+            {{ type.toLowerCase() }}
+          </label>
+        </div>
+      </div>
+      <div
+        *ngIf="form.get('wasteTypes')?.errors?.['required'] && form.touched"
+        class="mt-1 text-sm text-red-600"
+      >
+        Select at least one type of waste
+      </div>
+    </div>
+
+    <!-- Images -->
+    <div>
+      <label class="block text-sm font-medium text-gray-700">
+        <span class="flex items-center gap-2">
+          <lucide-icon [img]="Image" [size]="16"></lucide-icon>
+          Photos (Optional)
+        </span>
+      </label>
+      <div class="mt-1 flex items-center gap-4">
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          (change)="onFileSelected($event)"
+          class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+        />
+      </div>
+      <!-- Preview selected images -->
+      <div
+        *ngIf="selectedImages.length > 0"
+        class="mt-4 grid grid-cols-3 gap-4"
+      >
+        <div *ngFor="let img of selectedImages; let i = index" class="relative">
+          <img [src]="img.preview" class="h-24 w-24 object-cover rounded-lg" />
+          <button
+            type="button"
+            (click)="removeImage(i)"
+            class="absolute -top-2 -right-2 p-1 bg-red-100 rounded-full text-red-600 hover:bg-red-200"
+          >
+            <lucide-icon [img]="Trash" [size]="16"></lucide-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estimated Weight -->
+    <div>
+      <label
+        for="estimatedWeight"
+        class="block text-sm font-medium text-gray-700"
+      >
+        <span class="flex items-center gap-2">
+          <lucide-icon [img]="Scale" [size]="16"></lucide-icon>
+          Estimated Weight (g)
+        </span>
+      </label>
+      <div class="mt-1">
+        <input
+          type="number"
+          id="estimatedWeight"
+          formControlName="estimatedWeight"
+          min="1000"
+          max="10000"
+          class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          placeholder="Enter estimated weight in grams (1000g - 10000g)"
+        />
+      </div>
+      <div
+        *ngIf="
+          form.get('estimatedWeight')?.errors?.['required'] &&
+          form.get('estimatedWeight')?.touched
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        Estimated weight is required
+      </div>
+      <div
+        *ngIf="
+          form.get('estimatedWeight')?.errors?.['min'] &&
+          form.get('estimatedWeight')?.touched
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        Minimum weight is 1000g
+      </div>
+      <div
+        *ngIf="
+          form.get('estimatedWeight')?.errors?.['max'] &&
+          form.get('estimatedWeight')?.touched
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        Maximum weight is 10000g
+      </div>
+    </div>
+
+    <div>
+      <label for="address" class="block text-sm font-medium text-gray-700">
+        <span class="flex items-center gap-2">
+          <lucide-icon [img]="MapPin" [size]="16"></lucide-icon>
+          Collection Address
+        </span>
+      </label>
+      <div class="mt-1">
+        <input
+          type="text"
+          id="address"
+          formControlName="address"
+          class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          placeholder="Enter the collection address"
+        />
+      </div>
+      <div
+        *ngIf="
+          form.get('address')?.errors?.['required'] &&
+          form.get('address')?.touched
+        "
+        class="mt-1 text-sm text-red-600"
+      >
+        Address is required
+      </div>
+    </div>
+
+    <!-- Collection Date & Time -->
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label
+          for="collectionDate"
+          class="block text-sm font-medium text-gray-700"
+        >
+          <span class="flex items-center gap-2">
+            <lucide-icon [img]="Calendar" [size]="16"></lucide-icon>
+            Collection Date
+          </span>
+        </label>
+        <div class="mt-1">
+          <input
+            type="date"
+            id="collectionDate"
+            formControlName="collectionDate"
+            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+            [min]="minDate"
+          />
+        </div>
+        <div
+          *ngIf="
+            form.get('collectionDate')?.errors?.['required'] &&
+            form.get('collectionDate')?.touched
+          "
+          class="mt-1 text-sm text-red-600"
+        >
+          Collection date is required
+        </div>
+      </div>
+
+      <div>
+        <label
+          for="collectionTime"
+          class="block text-sm font-medium text-gray-700"
+        >
+          <span class="flex items-center gap-2">
+            <lucide-icon [img]="Clock" [size]="16"></lucide-icon>
+            Collection Time
+          </span>
+        </label>
+        <div class="mt-1">
+          <select
+            id="collectionTime"
+            formControlName="collectionTime"
+            class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          >
+            <option value="">Select a time</option>
+            <option *ngFor="let slot of timeSlots" [value]="slot">
+              {{ slot }}
+            </option>
+          </select>
+        </div>
+        <div
+          *ngIf="
+            form.get('collectionTime')?.errors?.['required'] &&
+            form.get('collectionTime')?.touched
+          "
+          class="mt-1 text-sm text-red-600"
+        >
+          Collection time is required
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label for="notes" class="block text-sm font-medium text-gray-700"
+        >Notes (Optional)</label
+      >
+      <div class="mt-1">
+        <textarea
+          id="notes"
+          formControlName="notes"
+          rows="3"
+          class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+          placeholder="Any additional notes about your collection request..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Info Alert about limits -->
+    <div class="p-4 rounded-md bg-blue-50 border border-blue-200">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <lucide-icon
+            [img]="BadgeInfo"
+            [size]="20"
+            class="text-blue-900"
+          ></lucide-icon>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-blue-800">
+            Collection Request Limits
+          </h3>
+          <div class="mt-2 text-sm text-blue-700">
+            <ul class="list-disc pl-5 space-y-1">
+              <li>Maximum 3 pending requests allowed at a time</li>
+              <li>Estimated weight must be between 1000g and 10000g</li>
+              <li>Collection time must be between 09:00 and 18:00</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        [disabled]="form.invalid || loading"
+        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      >
+        <lucide-icon [img]="Save" [size]="18"></lucide-icon>
+        {{ isEditMode ? "Update Request" : "Create Request" }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Loading Overlay -->
+  <div
+    *ngIf="loading"
+    class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-lg p-4 shadow-xl">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"
+      ></div>
+    </div>
+  </div>
+</div>

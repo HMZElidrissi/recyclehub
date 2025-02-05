@@ -11,4 +11,11 @@ export const routes: Routes = [
     loadChildren: () =>
       import('@features/auth/auth.routes').then((m) => m.authRoutes),
   },
+  {
+    path: 'collections',
+    loadChildren: () =>
+      import('@features/collection/collection.routes').then(
+        (m) => m.collectionRoutes,
+      ),
+  },
 ];
