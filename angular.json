@@ -5,7 +5,17 @@
   "projects": {
     "recyclehub": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:component": {
+          "path": "src/app/features",
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "path": "src/app/core/services",
+          "skipTests": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
