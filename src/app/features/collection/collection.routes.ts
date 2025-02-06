@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { DashboardLayoutComponent } from '@shared/layouts/dashboard-layout/dashboard-layout.component';
+import { CollectorDashboardComponent } from './collector-dashboard/collector-dashboard.component';
 import { CollectionListComponent } from './collection-list/collection-list.component';
 import { CollectionFormComponent } from './collection-form/collection-form.component';
 import { authGuard } from '@core/guards/auth.guard';
@@ -32,6 +33,13 @@ export const collectionRoutes: Route[] = [
         canActivate: [roleGuard],
         data: { roles: [Role.PARTICULAR] },
         title: 'Edit Collection Request',
+      },
+      {
+        path: 'collector-dashboard',
+        component: CollectorDashboardComponent,
+        canActivate: [roleGuard],
+        data: { roles: [Role.COLLECTOR] },
+        title: 'Collector Dashboard',
       },
       {
         path: '',

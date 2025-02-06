@@ -1,0 +1,272 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div>
+    <h2 class="text-2xl font-bold text-gray-900">
+      Collection Requests Dashboard
+    </h2>
+    <p class="mt-1 text-sm text-gray-500">
+      Manage and process collection requests
+    </p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="flex justify-center py-12">
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"
+    ></div>
+  </div>
+
+  <div
+    *ngIf="!(loading$ | async)"
+    class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+  >
+    <ng-container *ngFor="let request of requests$ | async">
+      <div
+        class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-4"
+      >
+        <div class="flex items-center justify-between">
+          <span
+            [class]="
+              'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' +
+              getStatusBadgeClass(request.status)
+            "
+          >
+            {{ request.status }}
+          </span>
+          <span class="text-sm text-gray-500"
+            >ID: {{ request.id.slice(0, 8) }}</span
+          >
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-2 text-gray-600">
+            <lucide-icon [img]="MapPin" [size]="16"></lucide-icon>
+            <span class="text-sm">{{ request.address }}</span>
+          </div>
+
+          <div class="flex items-center gap-2 text-gray-600">
+            <lucide-icon [img]="Calendar" [size]="16"></lucide-icon>
+            <span class="text-sm">{{
+              request.collectionDateTime | date: "medium"
+            }}</span>
+          </div>
+
+          <div class="flex items-center gap-2 text-gray-600">
+            <lucide-icon [img]="Scale" [size]="16"></lucide-icon>
+            <span class="text-sm"
+              >Estimated: {{ request.estimatedWeight }}g</span
+            >
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <span
+              *ngFor="let type of request.wasteTypes"
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
+            >
+              {{ type }}
+            </span>
+          </div>
+
+          <div *ngIf="request.notes" class="text-sm text-gray-600">
+            <p>{{ request.notes }}</p>
+          </div>
+        </div>
+
+        <div
+          *ngIf="request.status === RequestStatus.IN_PROGRESS"
+          class="border-t pt-4"
+        >
+          <h4 class="text-sm font-medium text-gray-900 mb-2">
+            Verify Waste Types:
+          </h4>
+          <div class="space-y-2">
+            <div
+              *ngFor="let type of request.wasteTypes"
+              class="flex items-center"
+            >
+              <input
+                type="checkbox"
+                [id]="'verify-' + type + '-' + request.id"
+                [checked]="isWasteTypeVerified(request.id, type)"
+                (change)="toggleWasteTypeVerification(request.id, type)"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label
+                [for]="'verify-' + type + '-' + request.id"
+                class="ml-2 text-sm text-gray-700"
+              >
+                Verify {{ type }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div
+          *ngIf="request.status === RequestStatus.IN_PROGRESS"
+          class="border-t pt-4"
+        >
+          <form
+            [formGroup]="validationForms[request.id]"
+            (ngSubmit)="validateRequest(request)"
+            class="space-y-4"
+          >
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Actual Weight (g)</label
+              >
+              <div class="mt-1">
+                <input
+                  type="number"
+                  formControlName="actualWeight"
+                  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  placeholder="Enter actual weight in grams"
+                />
+              </div>
+              <div
+                *ngIf="
+                  validationForms[request.id].get('actualWeight')?.errors?.[
+                    'min'
+                  ]
+                "
+                class="mt-1 text-sm text-red-600"
+              >
+                Minimum weight is 1000g
+              </div>
+              <div
+                *ngIf="
+                  validationForms[request.id].get('actualWeight')?.errors?.[
+                    'max'
+                  ]
+                "
+                class="mt-1 text-sm text-red-600"
+              >
+                Maximum weight is 10000g
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Collection Photos (Optional)</label
+              >
+              <div
+                class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md"
+              >
+                <div class="space-y-1 text-center">
+                  <lucide-icon
+                    [img]="ImageIcon"
+                    class="mx-auto h-12 w-12 text-gray-400"
+                  ></lucide-icon>
+                  <div class="flex text-sm text-gray-600">
+                    <label
+                      class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"
+                    >
+                      <span>Upload photos</span>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        class="sr-only"
+                        (change)="onImagesSelected($event, request.id)"
+                      />
+                    </label>
+                  </div>
+                  <p class="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Notes</label
+              >
+              <textarea
+                formControlName="notes"
+                rows="3"
+                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                placeholder="Add any additional notes about the collection"
+              ></textarea>
+            </div>
+
+            <div
+              *ngIf="!areAllWasteTypesVerified(request.id)"
+              class="rounded-md bg-yellow-50 p-4"
+            >
+              <div class="flex">
+                <lucide-icon
+                  [img]="AlertTriangle"
+                  class="h-5 w-5 text-yellow-400"
+                ></lucide-icon>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-yellow-800">
+                    Please verify all waste types before validation
+                  </h3>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-2">
+              <button
+                type="button"
+                (click)="rejectRequest(request)"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md"
+              >
+                <lucide-icon [img]="X" [size]="16" class="mr-2"></lucide-icon>
+                Reject
+              </button>
+              <button
+                type="submit"
+                [disabled]="
+                  !validationForms[request.id].valid ||
+                  !areAllWasteTypesVerified(request.id)
+                "
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md disabled:opacity-50"
+              >
+                <lucide-icon
+                  [img]="Check"
+                  [size]="16"
+                  class="mr-2"
+                ></lucide-icon>
+                Validate
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div
+          *ngIf="request.status !== RequestStatus.IN_PROGRESS"
+          class="border-t pt-4"
+        >
+          <div class="flex justify-end">
+            <ng-container [ngSwitch]="request.status">
+              <!-- Accept Collection -->
+              <button
+                *ngSwitchCase="RequestStatus.PENDING"
+                (click)="updateStatus(request.id, RequestStatus.OCCUPIED)"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+              >
+                Accept Collection
+              </button>
+
+              <button
+                *ngSwitchCase="RequestStatus.OCCUPIED"
+                (click)="updateStatus(request.id, RequestStatus.IN_PROGRESS)"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md"
+              >
+                Start Collection
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Empty State -->
+    <div *ngIf="(requests$ | async)?.length === 0" class="col-span-full">
+      <div class="text-center py-12 bg-white rounded-lg border border-gray-200">
+        <p class="text-gray-500">
+          No collection requests available in your area
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

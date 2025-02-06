@@ -8,6 +8,7 @@ import {
 } from '@core/models/collection.interface';
 import { Observable, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { Role } from '@core/models/user.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +27,24 @@ export class CollectionService {
       return throwError(() => new Error('User not authenticated'));
     }
 
+    // Le collecteur ne peut visionner que la liste des demandes provenant de sa même ville
+    if (currentUser.role === Role.COLLECTOR) {
+      return this.http.get<CollectionRequest[]>(this.apiUrl).pipe(
+        map((requests) =>
+          requests.filter((request) => {
+            return request.address.includes(currentUser.address);
+          }),
+        ),
+        catchError((error) =>
+          throwError(
+            () => new Error(`Failed to fetch requests: ${error.message}`),
+          ),
+        ),
+      );
+    }
+
     return this.http
-      .get<CollectionRequest[]>(`${this.apiUrl}?userId=${currentUser.id}`)
+      .get<CollectionRequest[]>(`${this.apiUrl}?particularId=${currentUser.id}`)
       .pipe(
         catchError((error) =>
           throwError(
@@ -45,31 +62,34 @@ export class CollectionService {
   ): Observable<CollectionRequest> {
     // Poids estimé (minimum 1000g obligatoire)
     if (request.estimatedWeight < 1000) {
-      throwError(() => new Error('Estimated Weight is 1000g minimum'));
+      return throwError(() => new Error('Estimated Weight is 1000g minimum'));
+    }
+
+    if (request.estimatedWeight > 10000) {
+      return throwError(() => new Error('Maximum weight is 10kg (10000g)'));
     }
 
     // Effectuer au maximum 3 demandes différentes simultanées non encore validées ou rejetées
     return this.getUserRequests().pipe(
       map((requests) => {
         const pendingReqs = requests.filter(
-          (req) => (req.status = RequestStatus.PENDING),
+          (req) =>
+            req.status === RequestStatus.PENDING ||
+            req.status === RequestStatus.OCCUPIED ||
+            req.status === RequestStatus.IN_PROGRESS,
         );
+
         if (pendingReqs.length >= 3) {
-          throwError(
-            () => new Error('You cannot make more then 3 pending requests'),
-          );
+          throw new Error('You cannot make more than 3 pending requests');
         }
         return requests;
       }),
-      map(() => {
-        const newReq: CollectionRequest = {
-          ...request,
-          id: crypto.randomUUID(),
-          status: RequestStatus.PENDING,
-          particularId: this.authService.getCurrentUser()?.id || '',
-        };
-        return newReq;
-      }),
+      map(() => ({
+        ...request,
+        id: crypto.randomUUID(),
+        status: RequestStatus.PENDING,
+        particularId: this.authService.getCurrentUser()?.id || '',
+      })),
       switchMap((newReq) =>
         this.http.post<CollectionRequest>(this.apiUrl, newReq),
       ),
@@ -82,7 +102,14 @@ export class CollectionService {
   ): Observable<CollectionRequest> {
     // Poids estimé (minimum 1000g obligatoire)
     if (updates.estimatedWeight && updates.estimatedWeight < 1000) {
-      throwError(() => new Error('Estimated Weight is 1000g minimum'));
+      return throwError(() => new Error('Estimated Weight is 1000g minimum'));
+    }
+
+    // If validating the request with actual weight
+    if (updates.status === RequestStatus.VALIDATED && updates.actualWeight) {
+      if (updates.actualWeight > 10000) {
+        return throwError(() => new Error('Maximum weight is 10kg (10000g)'));
+      }
     }
 
     return this.http
@@ -91,6 +118,23 @@ export class CollectionService {
         catchError((error) =>
           throwError(
             () => new Error(`Failed to update request: ${error.message}`),
+          ),
+        ),
+      );
+  }
+
+  uploadImages(id: string, images: File[]): Observable<CollectionRequest> {
+    const formData = new FormData();
+    images.forEach((image, index) => {
+      formData.append(`image${index}`, image);
+    });
+
+    return this.http
+      .post<CollectionRequest>(`${this.apiUrl}/${id}/images`, formData)
+      .pipe(
+        catchError((error) =>
+          throwError(
+            () => new Error(`Failed to upload images: ${error.message}`),
           ),
         ),
       );
