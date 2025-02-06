@@ -9,6 +9,8 @@ import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { routes } from './app.routes';
 import { collectionReducer } from '@store/collection/collection.reducer';
 import { CollectionEffects } from '@store/collection/collection.effects';
+import { PointsEffects } from '@store/points/points.effects';
+import { pointsReducer } from '@store/points/points.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,8 +19,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideStore({
       collection: collectionReducer,
+      points: pointsReducer,
     }),
-    provideEffects(CollectionEffects),
+    provideEffects([CollectionEffects, PointsEffects]),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: !isDevMode(),

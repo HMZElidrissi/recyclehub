@@ -26,7 +26,7 @@ import {
 } from 'lucide-angular';
 
 @Component({
-  selector: 'app-collection-list',
+  selector: 'app-dashboard-list',
   imports: [
     CommonModule,
     RouterModule,
@@ -65,7 +65,7 @@ export class CollectionListComponent implements OnInit {
   }
 
   deleteRequest(id: string): void {
-    if (!confirm('Are you sure you want to delete this collection request?'))
+    if (!confirm('Are you sure you want to delete this dashboard request?'))
       return;
     this.store.dispatch(CollectionActions.deleteRequest({ id }));
   }

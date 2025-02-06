@@ -10,7 +10,7 @@
 
     <div class="mt-4 sm:mt-0 sm:flex sm:items-center sm:space-x-4">
       <a
-        routerLink="/collections/new"
+        routerLink="/dashboard/new"
         class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm transition-colors"
       >
         <lucide-icon [img]="PlusCircle" [size]="18"></lucide-icon>
@@ -154,7 +154,7 @@
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
             <button
               *ngIf="request.status === RequestStatus.PENDING"
-              routerLink="/collections/edit/{{ request.id }}"
+              routerLink="/dashboard/edit/{{ request.id }}"
               class="text-indigo-600 hover:text-indigo-900"
               title="Edit"
             >

@@ -5,8 +5,9 @@ import { AuthService } from '@core/services/auth.service';
 import {
   CollectionRequest,
   RequestStatus,
+  WasteType,
 } from '@core/models/collection.interface';
-import { Observable, switchMap, throwError } from 'rxjs';
+import { Observable, of, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Role } from '@core/models/user.interface';
 
@@ -20,6 +21,27 @@ export class CollectionService {
     private http: HttpClient,
     private authService: AuthService,
   ) {}
+
+  private calculatePoints(request: CollectionRequest): number {
+    if (!request.actualWeight) return 0;
+
+    const weightInKg = request.actualWeight / 1000;
+
+    return request.wasteTypes.reduce((total, type) => {
+      switch (type) {
+        case WasteType.PLASTIC:
+          return total + weightInKg * 2;
+        case WasteType.GLASS:
+          return total + weightInKg;
+        case WasteType.PAPER:
+          return total + weightInKg;
+        case WasteType.METAL:
+          return total + weightInKg * 5;
+        default:
+          return total;
+      }
+    }, 0);
+  }
 
   getUserRequests(): Observable<CollectionRequest[]> {
     const currentUser = this.authService.getCurrentUser();
@@ -105,11 +127,52 @@ export class CollectionService {
       return throwError(() => new Error('Estimated Weight is 1000g minimum'));
     }
 
-    // If validating the request with actual weight
     if (updates.status === RequestStatus.VALIDATED && updates.actualWeight) {
       if (updates.actualWeight > 10000) {
         return throwError(() => new Error('Maximum weight is 10kg (10000g)'));
       }
+
+      // First update the dashboard request
+      return this.http
+        .patch<CollectionRequest>(`${this.apiUrl}/${id}`, updates)
+        .pipe(
+          switchMap((updatedRequest) => {
+            // If this is a validation update, calculate and award points
+            if (
+              updatedRequest.status === RequestStatus.VALIDATED &&
+              updatedRequest.particularId
+            ) {
+              const earnedPoints = this.calculatePoints(updatedRequest);
+
+              // Get current user points and update them
+              return this.http
+                .get(
+                  `${environment.apiUrl}/users/${updatedRequest.particularId}`,
+                )
+                .pipe(
+                  switchMap((user: any) => {
+                    const currentPoints = user.points || 0;
+                    return this.http
+                      .patch(
+                        `${environment.apiUrl}/users/${updatedRequest.particularId}`,
+                        {
+                          points: currentPoints + earnedPoints,
+                        },
+                      )
+                      .pipe(map(() => updatedRequest));
+                  }),
+                );
+            }
+
+            // If not a validation update, just return the updated request
+            return of(updatedRequest);
+          }),
+          catchError((error) =>
+            throwError(
+              () => new Error(`Failed to update request: ${error.message}`),
+            ),
+          ),
+        );
     }
 
     return this.http

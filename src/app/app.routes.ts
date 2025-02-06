@@ -12,9 +12,9 @@ export const routes: Routes = [
       import('@features/auth/auth.routes').then((m) => m.authRoutes),
   },
   {
-    path: 'collections',
+    path: 'dashboard',
     loadChildren: () =>
-      import('@features/collection/collection.routes').then(
+      import('@features/dashboard/collection.routes').then(
         (m) => m.collectionRoutes,
       ),
   },

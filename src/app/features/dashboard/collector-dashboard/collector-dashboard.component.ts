@@ -19,15 +19,14 @@ import {
 } from '@core/models/collection.interface';
 import { AuthService } from '@core/services/auth.service';
 import {
+  AlertTriangle,
   Calendar,
   Check,
+  Image as ImageIcon,
   LucideAngularModule,
   MapPin,
   Scale,
   X,
-  Image as ImageIcon,
-  AlertTriangle,
-  Upload,
 } from 'lucide-angular';
 
 @Component({
@@ -52,7 +51,6 @@ export class CollectorDashboardComponent implements OnInit {
   protected readonly X = X;
   protected readonly ImageIcon = ImageIcon;
   protected readonly AlertTriangle = AlertTriangle;
-  protected readonly Upload = Upload;
 
   constructor(
     private store: Store,

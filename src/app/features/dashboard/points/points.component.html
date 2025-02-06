@@ -1,0 +1,63 @@
+<div class="space-y-6">
+  <!-- Points Summary -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between">
+      <h2 class="text-2xl font-bold text-gray-900">Your Points</h2>
+      <div class="flex items-center">
+        <span class="text-3xl font-bold text-indigo-600">{{
+          currentUser?.points || 0
+        }}</span>
+        <span class="ml-2 text-gray-500">points</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Coupons -->
+  <div class="bg-white rounded-lg shadow p-6">
+    <h3 class="text-lg font-semibold mb-4">Available Rewards</h3>
+    <div class="grid gap-4 md:grid-cols-3">
+      <div
+        *ngFor="let option of COUPON_OPTIONS"
+        class="border rounded-lg p-4"
+        [class.opacity-50]="!canRedeem(option)"
+      >
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center">
+            <lucide-icon
+              [img]="GiftIcon"
+              [size]="20"
+              class="text-indigo-600 mr-2"
+            ></lucide-icon>
+            <span class="font-medium">{{ option.value }} DH</span>
+          </div>
+          <span class="text-sm text-gray-500">{{ option.points }} points</span>
+        </div>
+        <button
+          (click)="onRedeemClick(option)"
+          [disabled]="!canRedeem(option) || (loading$ | async)"
+          class="w-full mt-2 px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          <ng-container *ngIf="loading$ | async; else notLoading">
+            <lucide-icon
+              [img]="Loader2"
+              class="animate-spin mx-auto h-5 w-5"
+            ></lucide-icon>
+          </ng-container>
+          <ng-template #notLoading>
+            <span>Redeem</span>
+          </ng-template>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage" class="bg-green-50 p-4 rounded-md">
+    <p class="text-sm text-green-700">{{ successMessage }}</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error$ | async as error" class="bg-red-50 p-4 rounded-md">
+    <p class="text-sm text-red-700">{{ error }}</p>
+  </div>
+</div>

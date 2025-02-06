@@ -3,13 +3,19 @@ import { Role } from '@core/models/user.interface';
 export const navigationItems = [
   {
     label: 'My Collections',
-    path: '/collections/list',
+    path: '/dashboard/list',
+    roles: [Role.PARTICULAR],
+    exact: true,
+  },
+  {
+    label: 'My Points',
+    path: '/dashboard/points',
     roles: [Role.PARTICULAR],
     exact: true,
   },
   {
     label: 'Collection Dashboard',
-    path: '/collections/collector-dashboard',
+    path: '/dashboard/collector-dashboard',
     roles: [Role.COLLECTOR],
     exact: true,
   },

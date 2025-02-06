@@ -27,7 +27,7 @@ import {
 } from 'lucide-angular';
 
 @Component({
-  selector: 'app-collection-form',
+  selector: 'app-dashboard-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LucideAngularModule],
   templateUrl: './collection-form.component.html',
@@ -174,7 +174,7 @@ export class CollectionFormComponent implements OnInit {
 
     operation.subscribe({
       next: () => {
-        this.router.navigate(['/collections/list']);
+        this.router.navigate(['/dashboard/list']);
       },
       error: (error) => {
         this.error = error.message;
@@ -184,7 +184,7 @@ export class CollectionFormComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/collections/list']);
+    this.router.navigate(['/dashboard/list']);
   }
 
   onWasteTypeChange(event: Event): void {

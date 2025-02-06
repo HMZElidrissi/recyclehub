@@ -6,6 +6,7 @@ import { CollectionFormComponent } from './collection-form/collection-form.compo
 import { authGuard } from '@core/guards/auth.guard';
 import { roleGuard } from '@core/guards/role.guard';
 import { Role } from '@core/models/user.interface';
+import { PointsComponent } from '@features/dashboard/points/points.component';
 
 export const collectionRoutes: Route[] = [
   {
@@ -40,6 +41,13 @@ export const collectionRoutes: Route[] = [
         canActivate: [roleGuard],
         data: { roles: [Role.COLLECTOR] },
         title: 'Collector Dashboard',
+      },
+      {
+        path: 'points',
+        component: PointsComponent,
+        canActivate: [roleGuard],
+        data: { roles: [Role.PARTICULAR] },
+        title: 'Points',
       },
       {
         path: '',

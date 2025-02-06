@@ -10,9 +10,9 @@ export const authRedirectGuard = () => {
   if (authService.isAuthenticated()) {
     const user = authService.getCurrentUser();
     if (user?.role === Role.COLLECTOR) {
-      router.navigate(['/collections/collector-dashboard']);
+      router.navigate(['/dashboard/collector-dashboard']);
     } else {
-      router.navigate(['/collections/list']);
+      router.navigate(['/dashboard/list']);
     }
     return false;
   }
