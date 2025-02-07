@@ -1,59 +1,81 @@
-# Recyclehub
+# RecycleHub
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2.
+RecycleHub is a Single Page Application (SPA) built with Angular that connects individuals with authorized collectors for recycling services.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+- Angular 17+
+- NgRx (for Collections feature)
+- RxJS
+- Tailwind CSS
+- JSON Server (Backend Mock)
+- Lucide Icons
 
+## Getting Started
+
+### Installation
+
+1. Clone the repository:
 ```bash
-ng serve
+git clone https://github.com/HMZElidrissi/recyclehub.git
+cd recyclehub
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+2. Install dependencies:
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+3. Start the JSON Server (mock backend):
 ```bash
-ng generate --help
+npm run server
 ```
 
-## Building
-
-To build the project run:
-
+4. Start the Angular development server:
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The application will be available at `http://localhost:4200`
 
-## Running unit tests
+### Development Setup
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+1. Run JSON Server with the mock database:
 ```bash
-ng test
+json-server --watch db.json
 ```
 
-## Running end-to-end tests
+2. Default Users:
+- Collector: collector@recycleapp.com / password123
+- Particular: user@recycleapp.com / password123
 
-For end-to-end (e2e) testing, run:
+## Project Structure
 
-```bash
-ng e2e
+```
+├── app/
+│   ├── core/          # Core modules, services, and interfaces
+│   ├── features/      # Feature (auth, collection)
+│   ├── shared/        # Shared components and utilities
+│   └── store/         # NgRx store (collections feature)
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Key Features
 
-## Additional Resources
+### Authentication
+- User registration with profile picture upload
+- Login with role-based redirection
+- Session management
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Collection Management
+- Create, view, update, and delete collection requests
+- Weight estimation and validation
+- Multiple waste type selection
+- Status tracking
+- Points calculation based on waste type and weight
+
+### Points System
+- Automatic points attribution:
+  - Plastic: 2 points/kg
+  - Glass: 1 point/kg
+  - Paper: 1 point/kg
+  - Metal: 5 points/kg
