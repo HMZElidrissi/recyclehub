@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from './auth.service';
+import { AuthService } from '@core/services/auth.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '@env/environment';
@@ -65,8 +65,8 @@ export class PointsService {
       })
       .pipe(
         tap((updatedUser) => {
+          this.authService.currentUserSubject.next(updatedUser);
           localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-          this.authService.updateUser(currentUser.id, updatedUser);
         }),
         catchError((error) =>
           throwError(

@@ -10,7 +10,7 @@ import { environment } from '@env/environment';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/users`;
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  currentUserSubject = new BehaviorSubject<User | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {
@@ -83,19 +83,5 @@ export class AuthService {
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
-  }
-
-  updateUser(id: string, userData: Partial<User>): Observable<User> {
-    return this.http.patch<User>(`${this.apiUrl}/${id}`, userData).pipe(
-      tap((updatedUser) => {
-        if (this.getCurrentUser()?.id === id) {
-          localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-          this.currentUserSubject.next(updatedUser);
-        }
-      }),
-      catchError((error) =>
-        throwError(() => new Error('Update failed. Please try again later.')),
-      ),
-    );
   }
 }

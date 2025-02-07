@@ -10,7 +10,8 @@ import { AuthService } from '@core/services/auth.service';
 import { COUPON_OPTIONS, CouponOption } from '@core/models/point.interface';
 import { User } from '@core/models/user.interface';
 import { Gift, Loader2, LucideAngularModule } from 'lucide-angular';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, filter, take, takeUntil } from 'rxjs';
+import { PointsState } from '@store/points/points.reducer';
 
 @Component({
   selector: 'app-points',
@@ -30,7 +31,7 @@ export class PointsComponent implements OnInit, OnDestroy {
   protected readonly Loader2 = Loader2;
 
   constructor(
-    private store: Store,
+    private store: Store<{ points: PointsState }>,
     private authService: AuthService,
   ) {}
 
@@ -39,6 +40,20 @@ export class PointsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((user) => {
         this.currentUser = user;
+        console.log('User updated:', user); // For debugging
+      });
+
+    this.store
+      .select((state) => state.points)
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((state) => !state.loading && !state.error), // Only process successful updates
+      )
+      .subscribe(() => {
+        const user = this.authService.getCurrentUser();
+        if (user) {
+          this.currentUser = user;
+        }
       });
 
     this.error$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
@@ -66,13 +81,17 @@ export class PointsComponent implements OnInit, OnDestroy {
     this.successMessage = '';
     this.store.dispatch(PointsActions.convertPoints({ option }));
 
-    this.loading$.pipe(takeUntil(this.destroy$)).subscribe((loading) => {
-      if (!loading && !this.successMessage) {
+    this.loading$
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((loading) => !loading),
+        take(1),
+      )
+      .subscribe(() => {
         this.successMessage = `Successfully redeemed ${option.value} DH coupon!`;
         setTimeout(() => {
           this.successMessage = '';
         }, 3000);
-      }
-    });
+      });
   }
 }
