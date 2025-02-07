@@ -14,6 +14,12 @@ export const navigationItems = [
     exact: true,
   },
   {
+    label: 'Profile',
+    path: '/dashboard/profile',
+    roles: [Role.PARTICULAR, Role.COLLECTOR],
+    exact: true,
+  },
+  {
     label: 'Collection Dashboard',
     path: '/dashboard/collector-dashboard',
     roles: [Role.COLLECTOR],

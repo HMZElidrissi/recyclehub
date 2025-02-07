@@ -101,7 +101,7 @@ export class RegisterComponent implements OnDestroy {
             .login(userData.email, userData.password)
             .pipe(takeUntil(this.destroy$))
             .subscribe({
-              next: () => this.router.navigate(['/collection/list']),
+              next: () => this.router.navigate(['/dashboard/list']),
               error: () => {
                 this.error =
                   'Registration successful but login failed. Please try logging in.';

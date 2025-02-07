@@ -14,8 +14,8 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () =>
-      import('@features/dashboard/collection.routes').then(
-        (m) => m.collectionRoutes,
+      import('@features/dashboard/dashboard.routes').then(
+        (m) => m.dashboardRoutes,
       ),
   },
 ];
