@@ -132,19 +132,16 @@ export class CollectionService {
         return throwError(() => new Error('Maximum weight is 10kg (10000g)'));
       }
 
-      // First update the dashboard request
       return this.http
         .patch<CollectionRequest>(`${this.apiUrl}/${id}`, updates)
         .pipe(
           switchMap((updatedRequest) => {
-            // If this is a validation update, calculate and award points
             if (
               updatedRequest.status === RequestStatus.VALIDATED &&
               updatedRequest.particularId
             ) {
               const earnedPoints = this.calculatePoints(updatedRequest);
 
-              // Get current user points and update them
               return this.http
                 .get(
                   `${environment.apiUrl}/users/${updatedRequest.particularId}`,
@@ -164,7 +161,6 @@ export class CollectionService {
                 );
             }
 
-            // If not a validation update, just return the updated request
             return of(updatedRequest);
           }),
           catchError((error) =>
